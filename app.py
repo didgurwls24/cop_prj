@@ -35,10 +35,11 @@ PROVIDER_GEMINI = "Gemini"
 PROVIDER_GROQ   = "Groq"
 
 GEMINI_MODEL = "gemini-2.0-flash"
-GROQ_MODEL   = "llama-3.3-70b-versatile"
+GROQ_MODEL   = "llama-3.1-8b-instant"
 
-# 청크당 최대 글자 수 (25,000자 기준으로 분할)
-CHUNK_SIZE = 25_000
+# 청크당 최대 글자 수
+GEMINI_CHUNK_SIZE = 25_000
+GROQ_CHUNK_SIZE   = 8_000   # 무료 티어 TPM 한도 고려
 
 # 429 오류 발생 시 재시도 횟수와 각 대기 시간(초)
 MAX_RETRIES = 3
@@ -301,7 +302,8 @@ def call_api(meeting_text: str, provider: str = PROVIDER_GEMINI, status_placehol
             raise ValueError("GEMINI_API_KEY가 설정되지 않았습니다.")
         gemini_client = genai.Client(api_key=api_key)
 
-    chunks = _split_into_chunks(meeting_text)
+    chunk_size = GROQ_CHUNK_SIZE if provider == PROVIDER_GROQ else GEMINI_CHUNK_SIZE
+    chunks = _split_into_chunks(meeting_text, chunk_size)
     total  = len(chunks)
 
     # ── 단일 청크 호출 헬퍼 ─────────────────
