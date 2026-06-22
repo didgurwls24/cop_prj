@@ -140,7 +140,7 @@ def _is_rate_limit_error(e: Exception) -> bool:
     return "429" in msg or "RESOURCE_EXHAUSTED" in msg or "quota" in msg.lower()
 
 
-def _split_into_chunks(text: str, chunk_size: int = CHUNK_SIZE) -> list[str]:
+def _split_into_chunks(text: str, chunk_size: int = GEMINI_CHUNK_SIZE) -> list[str]:
     """
     긴 텍스트를 문단 경계를 살려 chunk_size 글자 이하의 청크로 분할합니다.
     짧으면 리스트 1개 그대로 반환합니다.
